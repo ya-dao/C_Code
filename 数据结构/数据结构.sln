@@ -19,7 +19,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3.1 顺序栈", "3.1 顺序
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3.2链栈", "3.2链栈\3.2链栈.vcxproj", "{BE37E9E1-0F78-45A5-A02C-CF811EBE833B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3.3循环链栈", "3.3循环链栈\3.3循环链栈.vcxproj", "{130F7494-A310-4646-927B-1908BF69DCA0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3.3循环队列", "3.3循环链栈\3.3循环链栈.vcxproj", "{130F7494-A310-4646-927B-1908BF69DCA0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3.4链队", "3.4链队\3.4链队.vcxproj", "{250CE9BF-03F9-4424-A8AD-8008BEB58542}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,14 @@ Global
 		{130F7494-A310-4646-927B-1908BF69DCA0}.Release|x64.Build.0 = Release|x64
 		{130F7494-A310-4646-927B-1908BF69DCA0}.Release|x86.ActiveCfg = Release|Win32
 		{130F7494-A310-4646-927B-1908BF69DCA0}.Release|x86.Build.0 = Release|Win32
+		{250CE9BF-03F9-4424-A8AD-8008BEB58542}.Debug|x64.ActiveCfg = Debug|x64
+		{250CE9BF-03F9-4424-A8AD-8008BEB58542}.Debug|x64.Build.0 = Debug|x64
+		{250CE9BF-03F9-4424-A8AD-8008BEB58542}.Debug|x86.ActiveCfg = Debug|Win32
+		{250CE9BF-03F9-4424-A8AD-8008BEB58542}.Debug|x86.Build.0 = Debug|Win32
+		{250CE9BF-03F9-4424-A8AD-8008BEB58542}.Release|x64.ActiveCfg = Release|x64
+		{250CE9BF-03F9-4424-A8AD-8008BEB58542}.Release|x64.Build.0 = Release|x64
+		{250CE9BF-03F9-4424-A8AD-8008BEB58542}.Release|x86.ActiveCfg = Release|Win32
+		{250CE9BF-03F9-4424-A8AD-8008BEB58542}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
