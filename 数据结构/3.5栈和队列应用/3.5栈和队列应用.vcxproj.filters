@@ -15,12 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LinkList.c">
+    <ClCompile Include="4.舞伴问题(队列).c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CSQuenu.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LinkList.h">
+    <ClInclude Include="CSQueue.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

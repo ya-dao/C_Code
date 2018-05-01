@@ -1,24 +1,6 @@
 #include "LinkList.h"
 
-void createListWithHead(LinkList *list,int n){
-	//创建并初始化头结点
-	(*list) = (LinkList)malloc(sizeof(LNode));
-	(*list)->data = 0;
-	(*list)->next = (*list);
-	//表示当前元素,用于引用next和previous元素,便于在两个结点之间插入元素
-	LNode *p = (*list);
-	//每次插入的临时结点
-	LNode *tempNode = NULL;
-	for (int i = 0; i < n; i++)
-	{
-		tempNode = malloc(sizeof(LNode));
-		tempNode->data = i;
-		tempNode->next = p->next;
-		//最后搞定p->next,确保之前的引用关系不出错
-		p->next = tempNode;
-		p = tempNode;
-	}
-}
+
 
 void initList(LinkList *list){
 	(*list) = (LinkList)malloc(sizeof(LNode));

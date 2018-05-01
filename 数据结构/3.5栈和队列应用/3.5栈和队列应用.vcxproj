@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E68DC266-E306-45E2-BC05-3D245EC6A7E8}</ProjectGuid>
-    <RootNamespace>My24算法设计题</RootNamespace>
+    <ProjectGuid>{7D1ABFFB-39F1-4C16-BCBB-F45FB6DCD3F1}</ProjectGuid>
+    <RootNamespace>My35栈和队列应用</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -110,10 +110,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LinkList.c" />
+    <ClCompile Include="4.舞伴问题(队列).c" />
+    <ClCompile Include="CSQuenu.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LinkList.h" />
+    <ClInclude Include="CSQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
