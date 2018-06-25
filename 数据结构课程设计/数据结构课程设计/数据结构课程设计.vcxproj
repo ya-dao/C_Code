@@ -110,12 +110,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="courseDesign.c" />
-    <ClCompile Include="main.c" />
+    <ClCompile Include="CourseDesign.c" />
+    <ClCompile Include="Main.c" />
     <ClCompile Include="Stack.c" />
+    <ClCompile Include="Util.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="courseDesign.h" />
+    <ClInclude Include="CourseDesign.h" />
+    <ClInclude Include="Util.h" />
     <ClInclude Include="Stack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

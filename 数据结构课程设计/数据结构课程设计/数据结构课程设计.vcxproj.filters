@@ -15,21 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="courseDesign.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Stack.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CourseDesign.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="courseDesign.h">
+    <ClInclude Include="Stack.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Stack.h">
+    <ClInclude Include="Util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CourseDesign.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
