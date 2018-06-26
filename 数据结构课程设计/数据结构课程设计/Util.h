@@ -18,7 +18,9 @@
 #define EVALUATE_GOOD "Good"
 
 //通用工具方法
-void inputFileName(char *fileName);
+void inputFilePath(char *fileName);
+void getFileName(char *fileName, char *filePath);
+FILE *initFile(char *fileName);
 void output(char *content);
 int skipSpace(char *lineString, int index);
 BOOL isLegalIdentifier(char *identifier);

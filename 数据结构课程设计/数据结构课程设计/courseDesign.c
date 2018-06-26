@@ -18,9 +18,7 @@ void handleLineString(char *lineString, CodeAnalysis *codeAnalysis, Stack *signS
 BOOL isEmptyLine(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 	int index = skipSpace(lineString,0);
 	if (lineString[index] == '\n') {
-		//对总行数和空行数进行计数
-		(codeAnalysis->emptyLineCount)++;
-		increaseCodeCount(codeAnalysis, signStack);
+		increaseEmptyLineCount(codeAnalysis, signStack);
 		return TRUE;
 	}
 	else
@@ -34,8 +32,8 @@ BOOL isComment(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 	//判断单行注释和多行注释起始
 	if (lineString[index] == '/') {
 		if (lineString[index + 1] == '/' || lineString[index + 1] == '*') {
-			(codeAnalysis->commentLineCount)++;
-			increaseCodeCount(codeAnalysis, signStack);
+			increaseCommentLineCount(codeAnalysis, signStack);
+
 			if (lineString[index + 1] == '*')
 			{
 				//将当前注释块起始符压栈
@@ -49,8 +47,7 @@ BOOL isComment(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 		if (lineString[index + 1] == '/')
 		{
 			//对代码行数的修改要放在出栈前,避免函数的括号出栈完了还没修改,造成函数里内的代码行数被漏加
-			(codeAnalysis->commentLineCount)++;
-			increaseCodeCount(codeAnalysis, signStack);
+			increaseCommentLineCount(codeAnalysis, signStack);
 			
 			pop(signStack);
 			return TRUE;
@@ -75,8 +72,9 @@ BOOL isComment(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 		{
 			if (lineString[index - 1] == '*')
 			{
-				codeAnalysis->commentLineCount++;
-				increaseCodeCount(codeAnalysis, signStack);
+				//对代码行数的修改要放在出栈前,避免函数的括号出栈完了还没修改,造成函数里内的代码行数被漏加
+				increaseCommentLineCount(codeAnalysis, signStack);
+
 				//多行注释出栈
 				pop(signStack);
 				return TRUE;
@@ -85,8 +83,7 @@ BOOL isComment(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 		//如果多行注释仍未结束,直接计数即可
 		else
 		{
-			codeAnalysis->commentLineCount++;
-			increaseCodeCount(codeAnalysis, signStack);
+			increaseCommentLineCount(codeAnalysis, signStack);
 			return TRUE;
 		}
 	}
@@ -209,8 +206,13 @@ BOOL isFunction(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) 
 		}
 		//添加一个函数的结点
 		addFunctionNode(codeAnalysis,functionName);
-		//修改代码行数
-		increaseCodeCount(codeAnalysis,signStack);
+		//前面'{'已经入栈,修改文件和函数中代码行数,更新,函数代码行数只统计里面纯代码行
+		//increaseCodeCount(codeAnalysis,signStack);
+
+		//前面'{'已经入栈, 只修改文件里面的行数记录,不能调用上面的方法,否则会对函数内部进行计数
+		(codeAnalysis->totalLineCount)++;
+		updateTotalLineCount(codeAnalysis);
+
 		popMultiply(signStack, pushCount);
 		return TRUE;
 	}
@@ -234,6 +236,8 @@ void popMultiply(Stack *signStack,int pushCount) {
 */
 void addFunctionNode(CodeAnalysis *codeAnalysis,char *functionName) {
 	FunctionAnalysis *function = (FunctionAnalysis *)malloc(sizeof(FunctionAnalysis));
+	function->blankLineCount = 0;
+	function->commentLineCount = 0;
 	function->codeLineCount = 0;
 	strcpy(function->functionName, functionName);
 	//用头插法将其插入到第一个位置
@@ -251,8 +255,9 @@ void isBlock(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 	//if和while等的的'{'为下一行第一个非空白字符的情况
 	if (lineString[index] == '{')
 	{
-		push(signStack, '{');
+		//函数定义的开头不算在代码里面,这里是处理函数定义的'{'在下一行的情况
 		increaseCodeCount(codeAnalysis, signStack);
+		push(signStack, '{');
 		return;
 	}
 	//跳到该行末尾,方便下面判断该行末尾字符的操作
@@ -273,8 +278,10 @@ void isBlock(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 	}
 	//结束的'}'必须是位于'\n'前的唯一元素,避免跟数组混淆,即不带分号';'
 	if (lineString[index] == '}') {
-		increaseCodeCount(codeAnalysis, signStack);
+		//这里是判断函数的最后一个'}',所以要先出栈,然后看栈是否为空,为空说明刚才是函数里的最后一个'}',不计数
 		pop(signStack);
+		//函数定义的结束符不算在代码里面
+		increaseCodeCount(codeAnalysis, signStack);
 		return;
 	}
 	increaseCodeCount(codeAnalysis, signStack);
@@ -284,10 +291,51 @@ void isBlock(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 	对相应部分的代码行数进行增加
 */
 void increaseCodeCount(CodeAnalysis *codeAnalysis, Stack *signStack) {
-	(codeAnalysis->codeLineCount)++;
+	//对总行数进行计数
+	(codeAnalysis->totalLineCount)++;
 	//栈里有大括号的时候才可能是函数里的代码,否则就是# 和 函数/变量声明 这些东西了
-	if (getBottom(signStack) == SIGN_BLOCK)
-	{
+	if (getBottom(signStack) == SIGN_BLOCK) {
 		(codeAnalysis->functionAnalysis->next->codeLineCount)++;
 	}
+	//更新新加入的字段
+	updateTotalLineCount(codeAnalysis);
+}
+
+/*
+	对空行数进行计数
+*/
+void increaseEmptyLineCount(CodeAnalysis *codeAnalysis, Stack *signStack) {
+	//对总行数和空行数进行计数
+	(codeAnalysis->blankLineCount)++;
+	(codeAnalysis->totalLineCount)++;
+	//如果当前在函数里面就分别计数,不计入函数总行数
+	if (getBottom(signStack) == SIGN_BLOCK) {
+		(codeAnalysis->functionAnalysis->next->blankLineCount)++;
+	}
+	//更新新加入的字段
+	updateTotalLineCount(codeAnalysis);
+}
+
+/*
+	对注释行数进行计数
+*/
+void increaseCommentLineCount(CodeAnalysis *codeAnalysis, Stack *signStack) {
+	//对总行数和注释行数进行计数
+	(codeAnalysis->commentLineCount)++;
+	(codeAnalysis->totalLineCount)++;
+	//如果当前在函数里面就分别计数,不计入函数总行数
+	if (getBottom(signStack) == SIGN_BLOCK) {
+		(codeAnalysis->functionAnalysis->next->commentLineCount)++;
+	}
+	//更新新加入的字段
+	updateTotalLineCount(codeAnalysis);
+}
+/*
+	修改文件中的代码行数=总行数-空行数-注释行数
+*/
+void updateTotalLineCount(CodeAnalysis *codeAnalysis) {
+	int totalLineCount = codeAnalysis->totalLineCount;
+	int emptyLineCount = codeAnalysis->blankLineCount;
+	int commentLineCount = codeAnalysis->commentLineCount;
+	codeAnalysis->codeLineCount = totalLineCount - emptyLineCount - commentLineCount;
 }

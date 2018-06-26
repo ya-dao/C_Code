@@ -1,12 +1,43 @@
 //该文件存储一些常用的工具方法,凡是不直接涉及到修改程序关键数据的方法都放在这里面
 #include "CourseDesign.h"
 
-void inputFileName(char *fileName) {
+void inputFilePath(char *fileName) {
 	printf("注意:只支持C语言,其他类型勿扰,Dos下不支持中文路径,谢谢合作!\n");
 	printf("提示:建议手动党不要挑战极限,最好直接到文件夹里找到对应文件拖进来\n\n");
 	printf("例:C:\\Users\\ZhangHao\\Desktop\\test.c\n");
 	printf("文件的全路径:\n");
 	scanf("%s", fileName);
+}
+/*
+	从路径中分割出文件名
+*/
+void getFileName(char *fileName, char *filePath){
+	int startIndex = 0, endIndex = 0;
+	//1.移动指针到尾部
+	while (filePath[endIndex] != '\0') {
+		endIndex++;
+	}
+	//2.移动指针到最后一个'\'处
+	while (filePath[endIndex] != '\\') {
+		endIndex--;
+	}
+	endIndex++;
+	//3.复制文件名
+	while (filePath[endIndex] != '\0') {
+		fileName[startIndex++] = filePath[endIndex++];
+	}
+	fileName[startIndex++] = '\0';
+}
+
+FILE *initFile(char *fileName) {
+	//ANSI编码,注意不要读到UTF-8编码的文本,会乱码
+	FILE *file = fopen(fileName, "r");
+	if (file == NULL)
+	{
+		output(OPEN_FILE_ERROR);
+		return NULL;
+	}
+	return file;
 }
 
 void output(char *content) {
