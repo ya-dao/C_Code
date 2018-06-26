@@ -43,7 +43,7 @@ int getLength(Stack *stack){
 }
 
 ElemType getTop(Stack *stack){
-	return *(stack->base + stack->top);
+	return *(stack->base + stack->top - 1);
 }
 STATUS push(Stack *stack,ElemType element){
 	if (stack == NULL) {
@@ -69,6 +69,18 @@ ElemType pop(Stack *stack){
 	int pop =  *(stack->base + stack->top);
 	*(stack->base + stack->top) = '\0';
 	return pop;
+}
+
+//取出栈底元素,如果是一个函数里面,则函数标志必然在栈底,不管上面有多少'{'或'/*'
+ElemType getBottom(Stack *stack) {
+	if (stack == NULL) {
+		return ERROR;
+	}
+	if (stack->top <= 0)
+	{
+		return ERROR;
+	}
+	return stack->base [0];
 }
 
 //遍历该栈,显示栈内当前元素

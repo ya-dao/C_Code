@@ -25,6 +25,7 @@ STATUS clearStack(Stack **stack);
 int isStackEmpty(Stack *stack);
 int getLength(Stack *stack);
 
+ElemType getBottom(Stack *stack);
 ElemType getTop(Stack *stack);
 STATUS push(Stack *stack,ElemType element);
 ElemType pop(Stack *stack);

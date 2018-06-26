@@ -44,17 +44,51 @@ BOOL isComment(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 		}
 		return TRUE;
 	}
-	//判断多行注释结束
+	//判断多行注释结束(多行注释在下一行开始的情况
 	else if (lineString[index] == '*') {
 		if (lineString[index + 1] == '/')
 		{
 			//对代码行数的修改要放在出栈前,避免函数的括号出栈完了还没修改,造成函数里内的代码行数被漏加
-			increaseCodeCount(codeAnalysis, signStack);
 			(codeAnalysis->commentLineCount)++;
+			increaseCodeCount(codeAnalysis, signStack);
 			
 			pop(signStack);
+			return TRUE;
 		}
-		return TRUE;
+	}
+	
+	//如果栈顶是多行注释起始符,则需要随时判断结束标志符
+	if (getTop(signStack) == '*')
+	{
+		//跳到该行末尾,方便下面判断该行末尾字符的操作(处理多行注释结束符在这一行末尾的情况)
+		while (lineString[index] != '\n' && lineString[index] != '\0')
+		{
+			index++;
+		}
+		//清除换行符'\n'前面所有空白字符,即将指针移到倒数第一个非空白符,最后一行可能没得'\n',只有一个'\0'
+		while (index >= 0 && (lineString[index] == ' ' || lineString[index] == '\t'
+			|| lineString[index] == '\n' || lineString[index] == '\0')) {
+			index--;
+		}
+		//多行注释结束符
+		if (lineString[index] == '/')
+		{
+			if (lineString[index - 1] == '*')
+			{
+				codeAnalysis->commentLineCount++;
+				increaseCodeCount(codeAnalysis, signStack);
+				//多行注释出栈
+				pop(signStack);
+				return TRUE;
+			}
+		}
+		//如果多行注释仍未结束,直接计数即可
+		else
+		{
+			codeAnalysis->commentLineCount++;
+			increaseCodeCount(codeAnalysis, signStack);
+			return TRUE;
+		}
 	}
 	return FALSE;
 }
@@ -67,6 +101,9 @@ BOOL isComment(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 	重点判断'YY(){',其他鸡肋部分还是要考虑下,虽然不是必要条件
 */
 BOOL isFunction(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
+	//有可能一个while等条件语句里面有多个'('被入栈,而函数中检测到逻辑运算符后,函数立即返回,导致栈不平衡.
+	//所以这里需要记录本次入栈次数,退出时全部出栈
+	int pushCount = 0;
 	int index = skipSpace(lineString,0);
 	char buffer[NAME_SIZE] = { 0 };
 	char functionName[NAME_SIZE] = { 0 };
@@ -94,16 +131,44 @@ BOOL isFunction(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) 
 	//如果下一个是'(',则后面是参数
 	if (lineString[index] == '(')
 	{
-		//跳过'('及' ',检查下一个是不是')',如果不是则有参数,主要检查一个参数的情况,避免跟if/while混淆
+		/*
+			入栈'('并跳过'('及' ',检查下一个是不是')',如果不是则有参数,主要检查一个参数的情况,避免跟if/while混淆
+			入栈和出栈'('的原因是避免参数里面的(表达式),如int (*p)[3]或者while((a + b) > 3)
+			这里不想只通过while/if/for等关键字来确定是不是函数,因为关键字可能有遗漏,找出差异是最好的
+		*/
+		push(signStack,SIGN_PARENTHESES);
+		pushCount++;
 		index++;
 		index = skipSpace(lineString,index);
-		while (lineString[index] != '\n' && lineString[index] != ')')
+		//循环的条件不再是lineString[index] != ')',而是符号栈顶不是'(',这才代表参数列表已经读取完毕了
+		while (lineString[index] != '\n' && getTop(signStack) == '(' )
 		{
-			//循环遍历,以便处理const这种情况
-			while (lineString[index] != ',' && lineString[index] != '\n' && lineString[index] != ')') {
+			//循环遍历获取参数列表的标识符,以便处理const这种情况
+			while (lineString[index] != ',' && lineString[index] != '\n' && getTop(signStack) == '(') {
 				//跳过空格,检查
-				if (copyAndCheckIdentifier(buffer, lineString, &index) == FALSE) {
+		  		if (copyAndCheckIdentifier(buffer, lineString, &index) == FALSE) {
+					popMultiply(signStack, pushCount);
 					return FALSE;
+				}
+				//再碰到'('就继续入栈并跳过
+				if (lineString[index] == '(')
+				{
+					push(signStack, SIGN_PARENTHESES);
+					pushCount++;
+					index++;
+					index = skipSpace(lineString, index);
+				}
+				//碰到')'就继续出栈并跳过
+				if (lineString[index] == ')')
+				{
+					pop(signStack);
+					pushCount--;
+					//后面需要根据参数列表结束的那个')'来判断后面的是不是'{',所以最后一个')'不跳过
+					if (getTop(signStack) == '(')
+					{
+						index++;
+					}
+					index = skipSpace(lineString, index);
 				}
 				index = skipSpace(lineString,index);
 			}
@@ -116,13 +181,13 @@ BOOL isFunction(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) 
 	}
 	else
 	{
+		popMultiply(signStack, pushCount);
 		return FALSE;
 	}
 	/*
 		经过上面的处理之后,
-		要么是处于函数参数的括号处,
-		判断大括号,存在就入栈
-		没有就算了,但是要判断是否存在';',区别函数声明头
+		如果是处于函数参数结束的括号处,就判断大括号,存在就入栈
+		没有就算了,但是要判断末尾是否存在';',区别函数声明头
 	*/
 	if (lineString[index] == ')')
 	{
@@ -137,6 +202,7 @@ BOOL isFunction(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) 
 			}
 			if (lineString[index] == ';')
 			{
+				popMultiply(signStack, pushCount);
 				return FALSE;
 			}
 			index++;
@@ -145,9 +211,22 @@ BOOL isFunction(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) 
 		addFunctionNode(codeAnalysis,functionName);
 		//修改代码行数
 		increaseCodeCount(codeAnalysis,signStack);
+		popMultiply(signStack, pushCount);
 		return TRUE;
 	}
+	popMultiply(signStack, pushCount);
 	return FALSE;
+}
+
+/*
+	根据指定的push次数进行pop
+*/
+void popMultiply(Stack *signStack,int pushCount) {
+	while (pushCount > 0)
+	{
+		pop(signStack);
+		pushCount--;
+	}
 }
 
 /*
@@ -176,7 +255,7 @@ void isBlock(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 		increaseCodeCount(codeAnalysis, signStack);
 		return;
 	}
-	//跳过该行末尾,方便下面判断该行末尾字符的操作
+	//跳到该行末尾,方便下面判断该行末尾字符的操作
 	while (lineString[index] != '\n' && lineString[index] != '\0')
 	{
 		index++;
@@ -206,8 +285,8 @@ void isBlock(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack) {
 */
 void increaseCodeCount(CodeAnalysis *codeAnalysis, Stack *signStack) {
 	(codeAnalysis->codeLineCount)++;
-	//栈里有括号的时候才可能是函数里的代码,否则就是# 和 函数/变量声明 这些东西了
-	if (isStackEmpty(signStack) == FALSE)
+	//栈里有大括号的时候才可能是函数里的代码,否则就是# 和 函数/变量声明 这些东西了
+	if (getBottom(signStack) == SIGN_BLOCK)
 	{
 		(codeAnalysis->functionAnalysis->next->codeLineCount)++;
 	}

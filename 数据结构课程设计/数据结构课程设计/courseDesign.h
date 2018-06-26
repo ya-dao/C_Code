@@ -28,3 +28,4 @@ void isBlock(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack);
 void handleLineString(char *lineString, CodeAnalysis *codeAnalysis, Stack *signStack);
 void increaseCodeCount(CodeAnalysis *codeAnalysis, Stack *signStack);
 void addFunctionNode(CodeAnalysis *codeAnalysis, char *functionName);
+void popMultiply(Stack *signStack, int pushCount);

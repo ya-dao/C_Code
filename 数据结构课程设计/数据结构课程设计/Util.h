@@ -1,14 +1,14 @@
 //该文件存储一些常量和通常工具方法
 
 //常量定义
-#define FILE_PATH "C:\\Users\\ZhangHao\\Desktop\\test.c"
-//#define FILE_PATH "F:\\Code_Sets\\C_Code\\程序基础练习题\\程序基础练习题"
-#define OPEN_FILE_ERROR "文件打开失败!"
+#define FILE_PATH "C:\\Users\\ZhangHao\\Desktop\\test2.c"
+#define OPEN_FILE_ERROR "文件打开失败!\n"
 #define FUNCTION_COUNT "函数总数"
 
 #define BOOL int
 #define SIGN_MULTIPLE_COMMENT '*'
 #define SIGN_BLOCK '{'
+#define SIGN_PARENTHESES '('
 #define NAME_SIZE 80
 #define BUFFER_SIZE 150
 
