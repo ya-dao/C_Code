@@ -6,11 +6,16 @@ FILE *initFile(char *fileName);
 void process(CodeAnalysis *codeAnalysis, Stack *signStack, FILE *file);
 void show(CodeAnalysis *codeAnalysis);
 void release(FILE *file, Stack *signStack, CodeAnalysis *codeAnalysis);
+int calculate(int divide, int divided);
+float calculateAverage(CodeAnalysis *codeAnalysis);
+char evaluateCodeStyle(int codeLine, char *evaluate);
+char evaluateCommentStyle(int commentRate, char *evaluate);
+char evaluateEmptyLineStyle(int emptyLineRate,char *evaluate);
 
 void main() {
-	//char fileName[20] = { 0 };
-	//inputFileName(fileName);
-	char fileName[100] = FILE_PATH;
+	char fileName[BUFFER_SIZE] = { 0 };
+	inputFileName(fileName);
+	//char fileName[100] = FILE_PATH;
 
 	//初始化
 	CodeAnalysis *codeAnalysis = initCodeAnalysis(fileName);
@@ -112,16 +117,53 @@ FILE *initFile(char *fileName) {
 }
 
 /*
+	计算结果
+	divide:除数
+	divided:被除数
+*/
+int calculate(int divide,int divided) {
+	return (int)(divide * 1.0 / divided * 100);
+}
+
+/*
 	输出结果
 */
 void show(CodeAnalysis *codeAnalysis) {
-	printf("文件名:%s\n", codeAnalysis->fileName);
-	printf("代码总行数:%d\n", codeAnalysis->codeLineCount);
-	printf("注释总行数:%d\n", codeAnalysis->commentLineCount);
-	printf("空行总行数:%d\n", codeAnalysis->emptyLineCount);
-
 	printf("\n");
-	FunctionAnalysis *next = codeAnalysis->functionAnalysis;
+	printf("The results of analysing program file \"%s\":\n", codeAnalysis->fileName);
+	printf("\n");
+	printf("\t%-18s:%d\n","Lines of code:",codeAnalysis->codeLineCount);
+	printf("\t%-18s:%d\n", "Lines of comments:",codeAnalysis->commentLineCount);
+	printf("\t%-18s:%d\n", "Blank lines:",codeAnalysis->emptyLineCount);
+	printf("\t\n");
+	printf("\t%s  %s  %s\n", "Code", "Comment", "Space");
+	printf("\t%s  %s  %s\n", "====", "=======", "=====");
+	
+	int pureCodeLine = codeAnalysis->codeLineCount - codeAnalysis->commentLineCount - codeAnalysis->emptyLineCount;
+	int emptyLineRate = calculate(codeAnalysis->emptyLineCount, codeAnalysis->codeLineCount);
+	int commentRate = calculate(codeAnalysis->commentLineCount, codeAnalysis->codeLineCount);
+	
+	printf("\t%-2d%%   %-2d%%      %-2d%%\n", calculate(pureCodeLine, codeAnalysis->codeLineCount),
+		commentRate, emptyLineRate);
+	printf("\n");
+	printf("\tThe program includes %d functions.\n", codeAnalysis->functionAnalysis->codeLineCount);
+
+	printf("\tThe average lengths of a section of code is %.1f lines.\n", calculateAverage(codeAnalysis));
+	printf("\n");
+
+	char evaluate[10] = { 0 };
+	char grade = evaluateCodeStyle(pureCodeLine,evaluate);
+	printf("Grade %C: %s routine size style.\n", grade, evaluate);
+	
+	memset(evaluate, 0, sizeof(char));
+	grade = evaluateCommentStyle(commentRate, evaluate);
+	printf("Grade %C: %s commenting style.\n", grade, evaluate);
+	
+	memset(evaluate, 0, sizeof(char));
+	grade = evaluateCommentStyle(commentRate, evaluate);
+	printf("Grade %C: %s commenting style.\n", grade, evaluate);
+
+	/*FunctionAnalysis *next = codeAnalysis->functionAnalysis;
 	printf("%s:%d\n", next->functionName, next->codeLineCount);
 	next = next->next;
 	printf("\n");
@@ -132,7 +174,22 @@ void show(CodeAnalysis *codeAnalysis) {
 		printf("代码总行数:%d\n", next->codeLineCount);
 		printf("\n");
 		next = next->next;
+	}*/
+}
+
+/*
+	计算所有函数的平均长度
+*/
+float calculateAverage(CodeAnalysis *codeAnalysis){
+	int functioncount = codeAnalysis->functionAnalysis->codeLineCount;
+	int sumOfCodeLine = 0;
+	FunctionAnalysis *next = codeAnalysis->functionAnalysis->next;
+	while (next != NULL)
+	{
+		sumOfCodeLine += next->codeLineCount;
+		next = next->next;
 	}
+	return (float)(sumOfCodeLine * 1.0 / functioncount);
 }
 
 /*
@@ -158,4 +215,89 @@ void release(FILE *file, Stack *signStack, CodeAnalysis *codeAnalysis) {
 	current = NULL;
 	next = NULL;
 	codeAnalysis = NULL;
+}
+
+char evaluateCodeStyle(int codeLine, char *evaluate) {
+	if (codeLine >= 10 && codeLine <= 15)
+	{
+		sprintf(evaluate,"%s",EVALUATE_EXCELLENT);
+		return 'A';
+	}
+	else if ((codeLine >= 8 && codeLine <= 9) || (codeLine >= 16 && codeLine <= 20))
+	{
+		sprintf(evaluate, "%s", EVALUATE_AWSOME);
+		return 'B';
+	}
+	else if ((codeLine >= 5 && codeLine <= 7) || (codeLine >= 21 && codeLine <= 24))
+	{
+		sprintf(evaluate, "%s", EVALUATE_GREATE);
+		return 'C';
+	}
+	else if (codeLine < 5 || codeLine > 24)
+	{
+		sprintf(evaluate, "%s", EVALUATE_GOOD);
+		return 'D';
+	}
+	else
+	{
+		//特殊情况其实就是D,但是还是要把书上的条件写出来
+		sprintf(evaluate, "%s", EVALUATE_GOOD);
+		return 'D';
+	}
+}
+char evaluateCommentStyle(int commentRate, char *evaluate) {
+	if (commentRate >= 15 && commentRate <= 25)
+	{
+		sprintf(evaluate, "%s", EVALUATE_EXCELLENT);
+		return 'A';
+	}
+	else if ((commentRate >= 10 && commentRate <= 14) || (commentRate >= 26 && commentRate <= 30))
+	{
+		sprintf(evaluate, "%s", EVALUATE_AWSOME);
+		return 'B';
+	}
+	else if ((commentRate >= 5 && commentRate <= 9) || (commentRate >= 31 && commentRate <=	35))
+	{
+		sprintf(evaluate, "%s", EVALUATE_GREATE);
+		return 'C';
+	}
+	else if (commentRate < 5 || commentRate > 35)
+	{
+		sprintf(evaluate, "%s", EVALUATE_GOOD);
+		return 'D';
+	}
+	else
+	{
+		//特殊情况其实就是D,但是还是要把书上的条件写出来
+		sprintf(evaluate, "%s", EVALUATE_GOOD);
+		return 'D';
+	}
+}
+char evaluateEmptyLineStyle(int emptyLineRate, char *evaluate) {
+	if (emptyLineRate >= 15 && emptyLineRate <= 25)
+	{
+		sprintf(evaluate, "%s", EVALUATE_EXCELLENT);
+		return 'A';
+	}
+	else if ((emptyLineRate >= 10 && emptyLineRate <= 14) || (emptyLineRate >= 26 && emptyLineRate <= 30))
+	{
+		sprintf(evaluate, "%s", EVALUATE_AWSOME);
+		return 'B';
+	}
+	else if ((emptyLineRate >= 5 && emptyLineRate <= 9) || (emptyLineRate >= 31 && emptyLineRate <=	35))
+	{
+		sprintf(evaluate, "%s", EVALUATE_GREATE);
+		return 'C';
+	}
+	else if (emptyLineRate < 5 || emptyLineRate > 35)
+	{
+		sprintf(evaluate, "%s", EVALUATE_GOOD);
+		return 'D';
+	}
+	else
+	{
+		//特殊情况其实就是D,但是还是要把书上的条件写出来
+		sprintf(evaluate, "%s", EVALUATE_GOOD);
+		return 'D';
+	}
 }

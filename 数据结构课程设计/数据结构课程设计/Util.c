@@ -2,7 +2,10 @@
 #include "CourseDesign.h"
 
 void inputFileName(char *fileName) {
-	printf("输入文件路径及文件名(最好直接拖进来):\n");
+	printf("输入文件路径及文件名(只支持C语言,其他类型勿扰,Dos下不支持中文路径,谢谢合作):\n");
+	printf("提示:建议手动党不要挑战极限,最好直接到文件夹里找到对应文件拖进来\n");
+	printf("例:C:\\Users\\ZhangHao\\Desktop\\test.c\n");
+	printf("输入你的路径:\n");
 	scanf("%s", fileName);
 }
 

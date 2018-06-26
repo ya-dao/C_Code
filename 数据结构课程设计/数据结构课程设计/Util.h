@@ -12,6 +12,11 @@
 #define NAME_SIZE 80
 #define BUFFER_SIZE 150
 
+#define EVALUATE_EXCELLENT "Excellent"
+#define EVALUATE_AWSOME "Awsome"
+#define EVALUATE_GREATE "Great"
+#define EVALUATE_GOOD "Good"
+
 //通用工具方法
 void inputFileName(char *fileName);
 void output(char *content);
@@ -21,4 +26,5 @@ BOOL isLegalFirstCharacter(char character);
 BOOL isLegalCharacter(char character);
 BOOL copyAndCheckIdentifier(char *buffer, char *source, int *sourceIndex);
 BOOL isOperator(char character);
+
 
