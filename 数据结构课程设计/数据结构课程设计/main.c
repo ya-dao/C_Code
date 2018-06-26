@@ -20,8 +20,8 @@ void main() {
 	FILE *file = NULL;
 	while (file == NULL)
 	{
-		sprintf(filePath, "%s", FILE_PATH);
-		//inputFileName(fileName);
+		//sprintf(filePath, "%s", FILE_PATH);
+		inputFileName(fileName);
 		getFileName(fileName,filePath);
 		file = initFile(filePath);
 	}
