@@ -15,25 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="BinaryTree.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Stack.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CSQuenu.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClInclude Include="CyclicLinkedList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryTree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="StackAndQueue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClCompile Include="CyclicLinkedList.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCyclicLinkedList.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

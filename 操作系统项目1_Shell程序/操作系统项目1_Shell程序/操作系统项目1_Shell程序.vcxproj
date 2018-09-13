@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{85FE6FBE-61E1-4805-B38D-0AD5DD59EB00}</ProjectGuid>
-    <RootNamespace>My51二叉树c</RootNamespace>
+    <ProjectGuid>{4E9E3722-F385-43F0-9A15-875F9B7CD2DE}</ProjectGuid>
+    <RootNamespace>操作系统项目1_Shell程序</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -110,14 +110,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryTree.c" />
-    <ClCompile Include="CSQuenu.c" />
-    <ClCompile Include="Stack.c" />
-    <ClCompile Include="test.c" />
+    <ClCompile Include="Shell.c">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Test.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryTree.h" />
-    <ClInclude Include="StackAndQueue.h" />
+    <ClInclude Include="shell.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

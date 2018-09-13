@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{85FE6FBE-61E1-4805-B38D-0AD5DD59EB00}</ProjectGuid>
-    <RootNamespace>My51二叉树c</RootNamespace>
+    <ProjectGuid>{5A90804D-8D84-4A55-A238-A61073F0C761}</ProjectGuid>
+    <RootNamespace>C语言内存对齐</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -110,14 +110,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryTree.c" />
-    <ClCompile Include="CSQuenu.c" />
-    <ClCompile Include="Stack.c" />
-    <ClCompile Include="test.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BinaryTree.h" />
-    <ClInclude Include="StackAndQueue.h" />
+    <ClCompile Include="Test1.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

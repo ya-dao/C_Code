@@ -19,13 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{85FE6FBE-61E1-4805-B38D-0AD5DD59EB00}</ProjectGuid>
-    <RootNamespace>My51二叉树c</RootNamespace>
+    <ProjectGuid>{79C11AE8-03E4-4383-B2F5-C07FB11B621E}</ProjectGuid>
+    <RootNamespace>钩子</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -110,14 +110,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryTree.c" />
-    <ClCompile Include="CSQuenu.c" />
-    <ClCompile Include="Stack.c" />
-    <ClCompile Include="test.c" />
+    <ClCompile Include="hook.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryTree.h" />
-    <ClInclude Include="StackAndQueue.h" />
+    <ClInclude Include="hook.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
