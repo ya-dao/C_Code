@@ -15,25 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test.c">
+    <ClCompile Include="朴素模式匹配字符串.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="BinaryTree.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Stack.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CSQuenu.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BinaryTree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="StackAndQueue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{85FE6FBE-61E1-4805-B38D-0AD5DD59EB00}</ProjectGuid>
-    <RootNamespace>My51二叉树c</RootNamespace>
+    <ProjectGuid>{0C11CE97-F1D3-442F-A3EE-9FA6C8D833E6}</ProjectGuid>
+    <RootNamespace>My42KMP算法匹配字符串</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -110,14 +110,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryTree.c" />
-    <ClCompile Include="CSQuenu.c" />
-    <ClCompile Include="Stack.c" />
-    <ClCompile Include="test.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BinaryTree.h" />
-    <ClInclude Include="StackAndQueue.h" />
+    <ClCompile Include="Test.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

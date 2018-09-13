@@ -19,7 +19,7 @@ STATUS destroyBinaryTree(BinaryTree *tree){
 		free(*tree);
 		return SUCCESS;
 	}else{
-		return SUCCESS;
+		return ERROR;
 	}
 }
 /*
@@ -77,14 +77,15 @@ STATUS assignValue(BinaryTree *tree,BTNode *node,ELEMENT_TYPE value){
 	{
 		return ERROR;
 	}
-	else {
+	else 
+	{
 		if ((*tree)->data == node->data)
 		{
 			(*tree)->data = value;
 			return SUCCESS;
 		}
 		int leftFlag = assignValue(&(*tree)->leftChild, node, value);
-		if (leftFlag == 1)
+		if (leftFlag == SUCCESS)
 		{
 			return leftFlag;
 		}
@@ -298,43 +299,61 @@ STATUS deleteChild(BinaryTree *tree, BTNode *parentNode, int isLeftChild) {
 		return right;
 	}
 }
-void prefixTraverse(BinaryTree tree){
+void preorderTraversal(BinaryTree tree){
 	if(tree == NULL){
 		return;
 	}else{
 		printf("%d ",tree->data);
-		prefixTraverse(tree->leftChild);
-		prefixTraverse(tree->rightChild);
+		preorderTraversal(tree->leftChild);
+		preorderTraversal(tree->rightChild);
 	}
 }
-void infixTraverse(BinaryTree tree) {
+void inorderTraversal(BinaryTree tree) {
 	if (tree == NULL) {
 		return;
 	}
 	else {
-		infixTraverse(tree->leftChild);
+		inorderTraversal(tree->leftChild);
 		printf("%d ", tree->data);
-		infixTraverse(tree->rightChild);
+		inorderTraversal(tree->rightChild);
 	}
 }
-void postfixTraverse(BinaryTree tree) {
+void postorderTraversal(BinaryTree tree) {
 	if (tree == NULL) {
 		return;
 	}
 	else {
-		postfixTraverse(tree->leftChild);
-		postfixTraverse(tree->rightChild);
+		postorderTraversal(tree->leftChild);
+		postorderTraversal(tree->rightChild);
 		printf("%d ", tree->data);
 	}
 }
-void levelTraverse(BinaryTree tree) {
+/*
+	层序遍历,需要借助队列实现
+*/
+void levelTraversal(BinaryTree tree) {
 	if (tree == NULL)
 	{
 		return;
 	}
 	else {
-		printf("%d ",tree->data);
-
+		CSQueue queue;
+		initQueue(&queue);
+		BTNode *pNode = tree;
+		//先将根结点入队,满足循环条件
+		enQueue(queue, pNode);
+		while (isQueueEmpty(queue) != TRUE)
+		{
+			pNode = deQueue(queue);
+			if (pNode != NULL)
+			{
+				printf("%d ", pNode->data);
+				//这里不判空,上面判断当前出队的元素是否为空即可
+				enQueue(queue, pNode->leftChild);
+				enQueue(queue, pNode->rightChild);
+			}
+		} 
+		destroyQueue(queue);
 	}
 }
 /*
@@ -377,5 +396,122 @@ void getCountOfNodeWithOneChild(BinaryTree tree,int *count) {
 		//遍历子结点
 		getCountOfNodeWithOneChild(tree->leftChild, count);
 		getCountOfNodeWithOneChild(tree->rightChild, count);
+	}
+}
+
+/*
+	沿着左子结点一直往下,将每个右子结点入栈.
+*/
+void preorderVisit(BTNode *pTree, Stack *stack) {
+	while (pTree != NULL)
+	{
+		printf("%d ", pTree->data);
+		push(stack, pTree->rightChild);
+		pTree = pTree->leftChild;
+	}
+}
+/*
+	将每一个结点当成一颗子树,从其根结点开始,先按先序访问其根结点,并将右子结点入栈,沿着左子结点下行.
+	当该子树遍历完成之后,取当前栈顶的右结点继续该操作,直至栈空
+*/
+void preorderTraversal_iteration(BinaryTree tree) {
+	if (tree == NULL)
+	{
+		return;
+	}
+	Stack *stack = NULL;
+	initStack(&stack);
+	BTNode *pTree = tree;
+	push(stack, pTree);
+	while (isStackEmpty(stack) != TRUE)
+	{
+		pTree = pop(stack);
+		preorderVisit(pTree, stack);
+	}
+}
+
+void inorderVisit(BinaryTree pTree,Stack *stack) {
+	while (pTree != NULL)
+	{
+		push(stack, pTree);
+		pTree = pTree->leftChild;
+	}
+}
+
+/*
+	与前序的非递归思路大体相同,运用栈保存结点.中序遍历即最先访问的是左子结点.
+	1.从根结点开始沿左下方向前进并入栈元素.
+	2.到左子结点为空时出栈当前元素访问,并将其右子结点入栈
+	3.重复上面的操作
+*/
+void inorderTraversal_iteration(BinaryTree tree) {
+	BTNode *pTree = tree;
+	Stack *stack = NULL;
+	initStack(&stack);
+
+	while (TRUE)
+	{
+		inorderVisit(pTree, stack);
+		if (isStackEmpty(stack) == TRUE)
+		{
+			break;
+		}
+		pTree = pop(stack);
+		printf("%d ", pTree->data);
+		if (pTree->rightChild != NULL)
+		{
+			pTree = pTree->rightChild;
+		}
+		else
+		{
+			pTree = NULL;
+		}
+	}
+}
+
+void inorderTraversal_iteration_2(BinaryTree tree) {
+	BTNode *pTree = tree;
+	Stack *stack = NULL;
+	initStack(&stack);
+	inorderVisit(pTree, stack);
+
+	while (isStackEmpty(stack) != TRUE)
+	{
+		BTNode *currentNode = pop(stack);
+		printf("%d ", currentNode->data);
+
+		if (currentNode->rightChild != NULL)
+		{
+			inorderVisit(currentNode->rightChild, stack);
+		}
+	}
+}
+
+void postorderTraversal_iteration(BinaryTree tree) {
+	Stack *stack = NULL;
+	initStack(&stack);
+
+	BTNode *pCurrent = tree;
+	push(stack, pCurrent);
+	BTNode *top = getTop(stack);
+
+	while (TRUE)
+	{
+		if (top != NULL && top->leftChild != pCurrent && top->rightChild != pCurrent)
+		{
+			while (top != NULL)
+			{
+				push(stack, top->rightChild);
+				push(stack, top->leftChild);
+				top = top->leftChild;
+			}
+		}
+		if (isStackEmpty(stack) == TRUE)
+		{
+			break;
+		}
+		pCurrent = pop(stack);
+		printf("%d ", pCurrent->data);
+		top = getTop(stack);
 	}
 }

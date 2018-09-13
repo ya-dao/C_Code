@@ -1,15 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
-#define ELEMENT_TYPE int
-#define STATUS int
-#define SUCCESS 1
-#define ERROR -1
+#include "StackAndQueue.h"
 
-typedef struct Tree {
-	ELEMENT_TYPE data;
-	struct Tree *leftChild;
-	struct Tree *rightChild;
-}BTNode,*BinaryTree;
+#define ELEMENT_TYPE int
 
 STATUS initBinaryTree(BinaryTree *tree);
 STATUS destroyBinaryTree(BinaryTree *tree);
@@ -26,9 +19,17 @@ ELEMENT_TYPE getLeftSibling(BinaryTree tree,BTNode *node);
 ELEMENT_TYPE getRightSibling(BinaryTree tree,BTNode *node);
 STATUS insertChild(BinaryTree *tree,BTNode *parentNode,int isLeftChild, BinaryTree *newChild);
 STATUS deleteChild(BinaryTree *tree,BTNode *parentNode,int isLeftChild);
-void prefixTraverse(BinaryTree tree);
-void infixTraverse(BinaryTree tree);
-void postfixTraverse(BinaryTree tree);
-void levelTraverse(BinaryTree tree);
+void preorderTraversal(BinaryTree tree);
+void inorderTraversal(BinaryTree tree);
+void postorderTraversal(BinaryTree tree);
+void preorderTraversal_iteration(BinaryTree tree);
+void inorderTraversal_iteration(BinaryTree tree);
+void postorderTraversal_iteration(BinaryTree tree);
+void levelTraversal(BinaryTree tree);
 void swapChild(BinaryTree *tree);
 void getCountOfNodeWithOneChild(BinaryTree tree,int *count);
+
+//使用迭代的方式进行树的遍历,需要借助栈的实现
+void preorderTraversal_iteration(BinaryTree tree);
+void inorderTraversal_iteration(BinaryTree tree);
+void postorderTraversal_iteration(BinaryTree tree);

@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{85FE6FBE-61E1-4805-B38D-0AD5DD59EB00}</ProjectGuid>
-    <RootNamespace>My51二叉树c</RootNamespace>
+    <ProjectGuid>{28BC4335-561F-4CFE-A6E9-D04951E55084}</ProjectGuid>
+    <RootNamespace>My222循环链表改进版</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -110,14 +110,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryTree.c" />
-    <ClCompile Include="CSQuenu.c" />
-    <ClCompile Include="Stack.c" />
-    <ClCompile Include="test.c" />
+    <ClInclude Include="CyclicLinkedList.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryTree.h" />
-    <ClInclude Include="StackAndQueue.h" />
+    <ClCompile Include="CyclicLinkedList.c" />
+    <ClCompile Include="TestCyclicLinkedList.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
